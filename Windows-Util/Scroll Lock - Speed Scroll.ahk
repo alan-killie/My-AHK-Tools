@@ -1,25 +1,20 @@
-#Persistent
-SetTimer, CheckScrollLock, 100
-return
+#Requires AutoHotkey v2.0
 
-CheckScrollLock:
-    ScrollLockState := GetKeyState("ScrollLock", "T")
-    if (ScrollLockState) {
-        Hotkey, ~WheelUp, FastScrollUp, On
-        Hotkey, ~WheelDown, FastScrollDown, On
-    } else {
-        Hotkey, ~WheelUp, FastScrollUp, Off
-        Hotkey, ~WheelDown, FastScrollDown, Off
-    }
-return
+/*
+@Script: FastScroll.ahk
+@Description: Multiplies scroll speed by 10x whenever Scroll Lock is ON.
+*/
 
-FastScrollUp:
-    Loop, 10  ; Scroll up x times per wheel tick
-        Send {WheelUp}
-return
+#HotIf GetKeyState("ScrollLock", "T") ; Only activate these hotkeys if Scroll Lock is toggled ON
 
-FastScrollDown:
-    Loop, 10  ; Scroll down x times per wheel tick
-        Send {WheelDown}
-return
+~WheelUp:: {
+    Loop 10
+        Send("{WheelUp}")
+}
 
+~WheelDown:: {
+    Loop 10
+        Send("{WheelDown}")
+}
+
+#HotIf ; Reset hotkey criteria
