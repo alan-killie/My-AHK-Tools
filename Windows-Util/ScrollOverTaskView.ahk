@@ -1,4 +1,16 @@
-﻿#Requires AutoHotkey v2.0
+/*
+@Script: ScrollOverTaskView.ahk
+@Description: Switch virtual desktops by scrolling over the Task View button.
+@Features: (via right-click on tray icon)
+  - Set number of virtual desktops (load script on desktop 1 and set the current number of virtual desktops)
+  - Set custom sound
+  - Sound toggle (with visual checkmark)
+  - Set current desktop name
+  - Name overlay toggle (with visual checkmark)
+@Usage: Hover mouse over Task View icon and use Scroll Wheel.
+*/
+
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; --- CONFIGURATION ---
@@ -141,4 +153,5 @@ MouseOverTaskView() {
         return ControlGetClassNN(hCtrl) == "TrayButton1"
     }
     return false
+
 }
