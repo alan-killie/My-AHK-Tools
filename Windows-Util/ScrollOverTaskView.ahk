@@ -1,6 +1,6 @@
 /*
 @Script: ScrollOverTaskView.ahk
-@Description: Switch virtual desktops by scrolling over the Task View button.
+@Description: Switch virtual desktops by scrolling the mousewheel over the Task View button. (Windows 10)
 @Features: (via right-click on tray icon)
   - Set number of virtual desktops (load script on desktop 1 and set the current number of virtual desktops)
   - Set custom sound
@@ -155,3 +155,4 @@ MouseOverTaskView() {
     return false
 
 }
+
