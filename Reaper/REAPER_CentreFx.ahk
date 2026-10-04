@@ -1,44 +1,51 @@
-; Centre all FX Windows in Reaper
+#Requires AutoHotkey v2.0
+#SingleInstance Force
 
-Loop
-{
-    GroupAdd, fxWin, ahk_class REAPERb32host
-    GroupAdd, fxWin, FX: Track
-    GroupAdd, fxWin, VST
-    GroupAdd, fxWin, VSTi:
-    GroupAdd, fxWin, VST3i:
-    GroupAdd, fxWin,, ReaSamplOmatic5000
-    GroupAdd, fxWin, JS:
-    GroupAdd, fxWin, BYPASSED
-    GroupAdd, fxWin, Add FX to:
-    GroupAdd, fxWin, CLAP:
-    GroupAdd, fxWin, CLAPi:
-    GroupAdd, fxWin, (x86 bridged)
-    WinWait, ahk_group fxWin, , , 2
-    if ErrorLevel = 0
+; Center all FX windows in REAPER.
+; This keeps floating plugin windows anchored in the middle of the screen.
 
-{
-	WinGetPos, xpos, ypos, width, height, ahk_group fxWin
-	WinMove, ahk_group fxWin,, % (A_ScreenWidth/2)-(width/2), % (A_ScreenHeight/2)-(height/2), %width%, %height%
-	WinWaitClose, ahk_group fxWin
+CreateFxGroup() {
+    GroupAdd("fxWin", "ahk_class REAPERb32host")
+    GroupAdd("fxWin", "FX: Track")
+    GroupAdd("fxWin", "VST")
+    GroupAdd("fxWin", "VSTi:")
+    GroupAdd("fxWin", "VST3i:")
+    GroupAdd("fxWin", "ReaSamplOmatic5000")
+    GroupAdd("fxWin", "JS:")
+    GroupAdd("fxWin", "BYPASSED")
+    GroupAdd("fxWin", "Add FX to:")
+    GroupAdd("fxWin", "CLAP:")
+    GroupAdd("fxWin", "CLAPi:")
+    GroupAdd("fxWin", "(x86 bridged)")
 }
+
+CenterWindow(hwnd) {
+    WinGetPos(&xPos, &yPos, &width, &height, "ahk_id " hwnd)
+    if (width <= 0 || height <= 0)
+        return
+
+    targetX := (A_ScreenWidth // 2) - (width // 2)
+    targetY := (A_ScreenHeight // 2) - (height // 2)
+    WinMove(targetX, targetY, width, height, "ahk_id " hwnd)
 }
-return
 
-#z::
-WinGetPos, xpos, ypos, width, height, ahk_group fxWin
-WinMove, ahk_group fxWin,, % (A_ScreenWidth/2)-(width/2), % (A_ScreenHeight/2)-(height/2), %width%, %height%
+CenterFxWindows() {
+    hwnds := WinGetList("ahk_group fxWin")
+    for hwnd in hwnds {
+        if (WinExist("ahk_id " hwnd))
+            CenterWindow(hwnd)
+    }
+}
 
-;Menu, Tray, Add, EnableCentreFx, EnableCentreFx
-;Menu, Tray, Add, DisableCentreFx, DisableCentreFx
-;Menu, Tray, Check, EnableCentreFx
-;Menu, Tray, Default, DisableCentreFx
+CreateFxGroup()
+SetTimer(CenterFxWindows, 200)
 
-;EnableCentreFx:
-;Menu, Tray, Check, EnableCentreFx
-;Menu, Tray, Uncheck, DisableCentreFx
+#z:: {
+    hwnd := WinExist("ahk_group fxWin")
+    if (hwnd)
+        CenterWindow(hwnd)
+}
 
-;DisableCentreFx:
-;Menu, Tray, Check, DisableCentreFx
-;Menu, Tray, Uncheck, EnableCentreFx
-;return
+; Optional tray menu toggles can be re-enabled here if you want a manual on/off switch.
+; Menu := A_TrayMenu
+; Menu.Add("Disable Center FX", (*) => ExitApp())
